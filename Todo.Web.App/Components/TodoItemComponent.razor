@@ -1,0 +1,20 @@
+@using Todo.Web.App.Models.Models
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">@todo.Title</h4>
+        <TodoItemStateComponent todoItem="@todo"></TodoItemStateComponent>
+        <TodoItemDeleteComponent todoId="@todo.Id" code="@todo.Code"></TodoItemDeleteComponent>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public TodoItem todo { get; set; }
+}
+
+<style scoped>
+    .card {
+        margin-bottom: 15px;
+    }
+</style>

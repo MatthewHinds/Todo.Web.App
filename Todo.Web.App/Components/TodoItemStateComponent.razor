@@ -1,0 +1,25 @@
+﻿@using Todo.Web.App.Models.Models
+@using Todo.Web.App.Models.Enums
+
+@inject HttpClient Http
+
+<h6 class="card-subtitle mb-2 text-muted">
+    <button type="button" class="btn @isStatusTodo-secondary btn-sm" @onclick="() => UpdateTodoState(TodoState.Todo)">Todo</button>
+    <button type="button" class="btn @isStatusDoing-primary btn-sm" @onclick="() => UpdateTodoState(TodoState.Doing)">Doing</button>
+    <button type="button" class="btn @isStatusDone-success btn-sm" @onclick="() => UpdateTodoState(TodoState.Done)">Done</button>
+</h6>
+
+@code {
+    [Parameter]
+    public TodoItem todoItem { get; set; }
+
+    private string isStatusTodo => todoItem.State == TodoState.Todo ? "btn" : "btn-outline";
+    private string isStatusDoing => todoItem.State == TodoState.Doing ? "btn" : "btn-outline";
+    private string isStatusDone => todoItem.State == TodoState.Done ? "btn" : "btn-outline";
+
+    protected async void UpdateTodoState(TodoState newState)
+    {
+        todoItem.State = newState;
+        await Http.PutAsJsonAsync<TodoItem>($"Todo/update/{todoItem.Code}", todoItem);
+    }
+}

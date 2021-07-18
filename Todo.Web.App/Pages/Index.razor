@@ -1,0 +1,40 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@using Todo.Web.App.Models.Models
+
+<p>Do you want to view an existing one?</p>
+
+<div class="form-inline">
+    <input class="form-control mb-2 mr-sm-2" @bind-value="SharingCode" id="todoSharingCodeInput" placeholder="Sharing code" />
+    <button type="button" class="btn btn-primary mb-2" @onclick="NavigateToView">View</button>
+</div>
+
+<br />
+
+<div class="form-group">
+    <p>Do you want to start a new todo list?</p>
+    <button type="button" class="btn btn-success" @onclick="NavigateToNewView">New</button>
+</div>
+
+
+@code {
+
+    private string SharingCode { get; set; }
+
+    protected void NavigateToView()
+    {
+        if (!string.IsNullOrEmpty(SharingCode))
+        {
+            NavigationManager.NavigateTo($"/view/{SharingCode}");
+        }
+    }
+
+    protected async void NavigateToNewView()
+    {
+        var response = await Http.GetFromJsonAsync<Response<SharingCode>>($"Sharing/create");
+        var newSharingCode = response.Data.Code;
+
+        NavigationManager.NavigateTo($"/view/{newSharingCode}");
+    }
+}

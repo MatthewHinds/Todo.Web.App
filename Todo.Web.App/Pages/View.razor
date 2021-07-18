@@ -1,0 +1,48 @@
+﻿@page "/view/{SharingCode}"
+@inject HttpClient Http
+@using Todo.Web.App.Models.Models
+@using Todo.Web.App.Components
+
+<div class="form-inline">
+    <h3 class="mb-2 mr-sm-2">Your todo list</h3>
+    <button type="button" class="btn btn-outline-secondary mb-2 btn-sm">+</button>
+</div>
+
+<br />
+
+@if (Fetching)
+{
+    <p>Locating todos ...</p>
+}
+else
+{
+    @if (TodoItems.Count > 0)
+    {
+        @foreach (var todo in TodoItems)
+        {
+            <TodoItemComponent todo="todo"></TodoItemComponent>
+        }
+    }
+    else
+    {
+        <p>Could not find any todos with that sharing code.</p>
+    }
+}
+
+@code {
+    [Parameter]
+    public string SharingCode { get; set; }
+
+    private List<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
+    private bool Fetching = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Fetching = true;
+
+        var response = await Http.GetFromJsonAsync<Response<List<TodoItem>>>($"Todo/get/{SharingCode}");
+        TodoItems = response.Data;
+
+        Fetching = false;
+    }
+}

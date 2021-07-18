@@ -1,0 +1,18 @@
+﻿@inject HttpClient Http
+
+<a @onclick="DeleteTodo" class="float-right">
+    <span class="oi oi-trash" aria-hidden="true"></span>
+</a>
+
+@code {
+    [Parameter]
+    public long todoId { get; set; }
+
+    [Parameter]
+    public string code { get; set; }
+
+    protected async void DeleteTodo()
+    {
+        await Http.DeleteAsync($"Todo/delete/{code}/{todoId}");
+    }
+}
