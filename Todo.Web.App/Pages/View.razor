@@ -5,29 +5,35 @@
 
 <div class="form-inline">
     <h3 class="mb-2 mr-sm-2">Your todo list</h3>
-    <button type="button" class="btn btn-outline-secondary mb-2 btn-sm">+</button>
+    <button type="button" class="btn btn-outline-secondary mb-2 btn-sm" data-toggle="modal" data-target="#createTodoModal">+</button>
 </div>
+
+<TodoItemCreateComponent Code="@SharingCode"></TodoItemCreateComponent>
 
 <br />
 
-@if (Fetching)
-{
-    <p>Locating todos ...</p>
-}
-else
-{
-    @if (TodoItems.Count > 0)
+<div id="todoCards">
+    @if (Fetching)
     {
-        @foreach (var todo in TodoItems)
-        {
-            <TodoItemComponent todo="todo"></TodoItemComponent>
-        }
+        <p>Locating todos ...</p>
     }
     else
     {
-        <p>Could not find any todos with that sharing code.</p>
+        @if (TodoItems.Count > 0)
+        {
+            @foreach (var todo in TodoItems)
+            {
+                <TodoItemComponent todo="todo"></TodoItemComponent>
+            }
+        }
+        else
+        {
+            <p>Could not find any todos with that sharing code.</p>
+            <p>Please create one to get started!</p>
+        }
     }
-}
+</div>
+
 
 @code {
     [Parameter]
@@ -46,3 +52,10 @@ else
         Fetching = false;
     }
 }
+
+<style scoped>
+    #todoCards {
+        height: 75vh;
+        overflow: auto;
+    }
+</style>

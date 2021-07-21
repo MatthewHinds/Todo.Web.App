@@ -1,0 +1,52 @@
+﻿@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+
+<div class="modal" tabindex="-1" role="dialog" id="createTodoModal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create new Todo!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <EditForm Model="@createTodoModel" OnValidSubmit="@CreateTodo">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <label for="inputTitle">Title</label>
+                        <InputText class="form-control" id="inputTitle" aria-describedby="todoHelp" placeholder="Enter todo title" @bind-Value="createTodoModel.TodoTitle"></InputText>
+                        <small id="todoHelp" class="form-text text-muted">This is the title, or text of the todo</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create</button> 
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public string Code { get; set; }
+
+    private CreateTodoModel createTodoModel = new CreateTodoModel();
+
+    private async void CreateTodo()
+    {
+        await Http.PostAsJsonAsync<string>($"Todo/create/{Code}", createTodoModel.TodoTitle);
+    }
+
+    public class CreateTodoModel
+    {
+        [Required]
+        [StringLength(100, ErrorMessage = "Title is too long")]
+        public string TodoTitle { get; set; }
+    }
+}
